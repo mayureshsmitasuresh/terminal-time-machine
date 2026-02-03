@@ -2,14 +2,21 @@ import { groupCommitsByPeriod, formatDate } from '../utils/date-utils.js';
 import { analyzeCommits } from '../analyzers/commit-analyzer.js';
 import { introTemplates, chapterTitles, moodDescriptors, milestoneTemplates, getRandom } from '../../prompts/story-templates.js';
 
-export function generateStory(commits, milestones, stats) {
+export function generateNarrative({ commits, milestones, repoName, options }) {
   let story = '';
   
   // 1. Introduction
   const firstCommit = commits[commits.length - 1]; // Reverse chrono
+  
+  if (repoName) {
+    story += `# The Story of ${repoName}\n\n`;
+  } else {
+    story += `# A Git Journey\n\n`;
+  }
+
   if (firstCommit) {
     const intro = getRandom(introTemplates).replace('{date}', formatDate(firstCommit.date));
-    story += `# Prologue\n\n${intro}\n\n`;
+    story += `## Prologue\n\n${intro}\n\n`;
   }
 
   // 2. Group by months for chapters

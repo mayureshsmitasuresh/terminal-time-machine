@@ -2,7 +2,7 @@ import { parseGitHistory } from '../analyzers/git-parser.js';
 import { detectMilestones } from '../analyzers/milestone-detector.js';
 import { generateTimeline } from '../generators/timeline-generator.js';
 import { formatTitle, formatError } from '../utils/formatting.js';
-import { handleOutput } from './story.js'; // Reuse helper
+import { handleOutput } from '../utils/export.js';
 
 export const timelineCommand = async (options) => {
   try {

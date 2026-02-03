@@ -1,50 +1,65 @@
-import { marked } from 'marked';
+import ora from 'ora';
+import chalk from 'chalk';
+import boxen from 'boxen';
 import { parseGitHistory } from '../analyzers/git-parser.js';
+import { analyzeCommits } from '../analyzers/commit-analyzer.js';
+import { generateNarrative } from '../generators/story-generator.js';
 import { detectMilestones } from '../analyzers/milestone-detector.js';
-import { generateStory } from '../generators/story-generator.js';
-import { formatTitle, formatError } from '../utils/formatting.js';
-import { writeToFile } from '../utils/export.js';
-import { formatSuccess } from '../utils/formatting.js';
 
-// Reusable export handler
-export function handleOutput(content, options, format = 'markdown') {
-  if (options.output) {
-    let outFormat = options.format || format;
-    if (options.output.endsWith('.html')) outFormat = 'html';
-    if (options.output.endsWith('.json')) outFormat = 'json';
-    
-    try {
-      writeToFile(content, outFormat, options.output);
-      console.log(formatSuccess(`Output saved to ${options.output}`));
-    } catch (err) {
-      console.error(formatError(err.message));
-    }
-  } else {
-    if (format === 'markdown') {
-      console.log(marked(content));
-    } else {
-      console.log(content);
-    }
-  }
-}
-
-export const storyCommand = async (options) => {
+export async function storyCommand(options = {}) {
+  const spinner = ora('Analyzing git history...').start();
+  
   try {
-    console.log(formatTitle('Analyzing git history...'));
-    const { commits, tags } = await parseGitHistory(process.cwd(), options);
+    // Step 1: Parse git history
+    const gitData = await parseGitHistory(process.cwd(), options);
     
-    if (commits.length === 0) {
-      console.log(formatError('No commits found.'));
+    if (!gitData || !gitData.commits || gitData.commits.length === 0) {
+      spinner.fail('No commits found in this repository');
       return;
     }
-
-    console.log(formatTitle('Generating Story...'));
-    const milestones = detectMilestones(commits, tags);
-    const storyMarkdown = generateStory(commits, milestones);
     
-    handleOutput(storyMarkdown, options, 'markdown');
-
-  } catch (err) {
-    console.error(formatError(err.message));
+    spinner.text = `Found ${gitData.commits.length} commits. Analyzing...`;
+    
+    // Step 2: Analyze commits (categorize, group, etc.)
+    const analysis = await analyzeCommits(gitData.commits, options);
+    
+    // Step 3: Detect milestones
+    // Passing tags if available for better release detection
+    spinner.text = 'Detecting key milestones...';
+    const milestones = detectMilestones(gitData.commits, gitData.tags);
+    
+    // Step 4: Generate the narrative story
+    spinner.text = 'Generating story...';
+    const story = generateNarrative({
+      commits: gitData.commits,
+      analysis: analysis,
+      milestones: milestones,
+      repoName: gitData.repoName,
+      options: options
+    });
+    
+    spinner.succeed('Story Generated!');
+    
+    // Display the story
+    console.log('\n');
+    console.log(boxen(chalk.bold.cyan('📖 Your Repository\'s Story'), {
+      padding: 1,
+      margin: 1,
+      borderStyle: 'double',
+      borderColor: 'cyan'
+    }));
+    console.log('\n');
+    console.log(story);
+    console.log('\n'); // Extra spacing at the end
+    
+  } catch (error) {
+    spinner.fail('Failed to generate story');
+    console.error(chalk.red('Error:'), error.message);
+    
+    if (options.verbose) {
+      console.error(chalk.gray(error.stack));
+    }
+    
+    process.exit(1);
   }
-};
+}

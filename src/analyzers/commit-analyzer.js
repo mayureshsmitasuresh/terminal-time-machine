@@ -56,14 +56,14 @@ export function analyzeCommits(commits) {
     if (type === 'feat') impactScore += 2;
     if (type === 'fix') impactScore += 1;
 
-    enrichedCommits.push({
+    return {
       ...commit,
       analysis: {
         type,
         scope,
         impactScore
       }
-    });
+    };
   });
 
   return {

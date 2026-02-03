@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { marked } from 'marked';
+import { formatSuccess, formatError } from './formatting.js';
 
 export function writeToFile(content, format, filename) {
   let finalContent = content;
@@ -33,5 +34,26 @@ ${marked(content)}
     return true;
   } catch (error) {
     throw new Error(`Failed to write file: ${error.message}`);
+  }
+}
+
+export function handleOutput(content, options, format = 'markdown') {
+  if (options.output) {
+    let outFormat = options.format || format;
+    if (options.output.endsWith('.html')) outFormat = 'html';
+    if (options.output.endsWith('.json')) outFormat = 'json';
+    
+    try {
+      writeToFile(content, outFormat, options.output);
+      console.log(formatSuccess(`Output saved to ${options.output}`));
+    } catch (err) {
+      console.error(formatError(err.message));
+    }
+  } else {
+    if (format === 'markdown') {
+      console.log(marked(content));
+    } else {
+      console.log(content);
+    }
   }
 }

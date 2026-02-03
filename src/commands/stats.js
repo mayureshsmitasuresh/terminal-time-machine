@@ -5,7 +5,7 @@ import { getContributorStats } from '../analyzers/contributor-stats.js';
 import { generateHeatmap } from '../generators/heatmap-generator.js';
 import { generateActivityChart } from '../generators/graph-generator.js';
 import { formatTitle, formatError } from '../utils/formatting.js';
-import { handleOutput } from './story.js';
+import { handleOutput } from '../utils/export.js';
 
 export const statsCommand = async (options) => {
   try {

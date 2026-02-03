@@ -13461,5 +13461,272 @@
       ],
       "latest": "v1.0.0"
     }
+  },
+  "a3e6c5599ae691b759f14742db85c36e9fbd500f-{\"format\":\"markdown\"}": {
+    "commits": [
+      {
+        "hash": "a3e6c5599ae691b759f14742db85c36e9fbd500f",
+        "date": "2026-02-03T21:13:15Z",
+        "message": "docs: add contributing guidelines",
+        "refs": "HEAD -> main, origin/main",
+        "body": "",
+        "author_name": "Mayuresh",
+        "author_email": "mayureshshitole@gmail.com",
+        "diff": {
+          "changed": 1,
+          "deletions": 0,
+          "insertions": 73,
+          "files": [
+            {
+              "file": "CONTRIBUTING.md",
+              "changes": 73,
+              "insertions": 57,
+              "deletions": 0,
+              "binary": false
+            }
+          ]
+        }
+      },
+      {
+        "hash": "0e70a590be447242dc6fd13307851e47e796a0a4",
+        "date": "2026-02-03T21:10:55Z",
+        "message": "the launch",
+        "refs": "",
+        "body": "",
+        "author_name": "Mayuresh",
+        "author_email": "mayureshshitole@gmail.com",
+        "diff": {
+          "changed": 28,
+          "deletions": 0,
+          "insertions": 29661,
+          "files": [
+            {
+              "file": ".gitignore",
+              "changes": 5,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": ".ttm-cache.json",
+              "changes": 13465,
+              "insertions": 32,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "README.md",
+              "changes": 123,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "bin/ttm.js",
+              "changes": 2,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "feature.txt",
+              "changes": 2,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "package-lock.json",
+              "changes": 1424,
+              "insertions": 4,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "package.json",
+              "changes": 27,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "prompts/story-templates.js",
+              "changes": 30,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "src/analyzers/commit-analyzer.js",
+              "changes": 73,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "src/analyzers/contributor-stats.js",
+              "changes": 33,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "src/analyzers/git-parser.js",
+              "changes": 99,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "src/analyzers/milestone-detector.js",
+              "changes": 61,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "src/commands/release-notes.js",
+              "changes": 48,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "src/commands/stats.js",
+              "changes": 59,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "src/commands/story.js",
+              "changes": 50,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "src/commands/timeline.js",
+              "changes": 32,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "src/config/themes.js",
+              "changes": 52,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "src/generators/graph-generator.js",
+              "changes": 36,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "src/generators/heatmap-generator.js",
+              "changes": 80,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "src/generators/story-generator.js",
+              "changes": 82,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "src/generators/timeline-generator.js",
+              "changes": 50,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "src/index.js",
+              "changes": 154,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "src/utils/date-utils.js",
+              "changes": 36,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "src/utils/export.js",
+              "changes": 37,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "src/utils/formatting.js",
+              "changes": 13,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "stats.json",
+              "changes": 13527,
+              "insertions": 33,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "story.md",
+              "changes": 18,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            },
+            {
+              "file": "tests/basic.test.js",
+              "changes": 43,
+              "insertions": 1,
+              "deletions": 0,
+              "binary": false
+            }
+          ]
+        }
+      }
+    ],
+    "totalCommits": 2,
+    "branches": {
+      "all": [
+        "main",
+        "remotes/origin/main"
+      ],
+      "branches": {
+        "main": {
+          "current": true,
+          "linkedWorkTree": false,
+          "name": "main",
+          "commit": "a3e6c55",
+          "label": "docs: add contributing guidelines"
+        },
+        "remotes/origin/main": {
+          "current": false,
+          "linkedWorkTree": false,
+          "name": "remotes/origin/main",
+          "commit": "a3e6c55",
+          "label": "docs: add contributing guidelines"
+        }
+      },
+      "current": "main",
+      "detached": false
+    },
+    "tags": {
+      "all": []
+    }
   }
 }
