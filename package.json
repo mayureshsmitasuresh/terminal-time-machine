@@ -1,13 +1,39 @@
 {
     "name": "terminal-time-machine",
-    "version": "1.0.1",
-    "description": "Git History Storyteller CLI",
+    "version": "1.1.0",
+    "author": {
+        "name": "Mayuresh Smita Suresh",
+        "url": "https://tagnovate.com/mayuresh"
+    },
+    "license": "MIT",
+    "homepage": "https://github.com/mayureshsmitasuresh/terminal-time-machine",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/mayureshsmitasuresh/terminal-time-machine.git"
+    },
+    "keywords": [
+        "terminal",
+        "time",
+        "machine",
+        "git",
+        "history",
+        "storyteller",
+        "cli"
+    ],
+    "description": "Terminal History Storyteller CLI",
     "type": "module",
     "bin": {
-        "ttm": "./bin/ttm.js"
+        "ttm": "bin/ttm.js",
+        "terminal-time-machine": "bin/ttm.js",
+        "git-story": "bin/ttm.js",
+        "git-timeline": "bin/ttm.js",
+        "git-stats": "bin/ttm.js",
+        "git-contributors": "bin/ttm.js",
+        "git-upgrades": "bin/ttm.js"
     },
     "scripts": {
         "start": "node bin/ttm.js",
+        "postinstall": "node scripts/postinstall.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "dependencies": {
@@ -19,6 +45,7 @@
         "figlet": "^1.7.0",
         "gradient-string": "^2.0.2",
         "inquirer": "^9.2.14",
+        "markdown-pdf": "^11.0.0",
         "marked": "^11.1.1",
         "marked-terminal": "^6.1.0",
         "ora": "^8.0.1",

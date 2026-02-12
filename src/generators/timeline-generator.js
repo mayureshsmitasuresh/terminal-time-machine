@@ -1,49 +1,55 @@
-import { getTheme } from '../config/themes.js';
+import chalk from 'chalk';
 
-export function generateTimeline(commits, milestones, options = {}) {
-  const theme = getTheme(options.theme);
+export function processGitGraph(rawGraph, themeObj) {
+  const lines = rawGraph.split('\n');
   let output = '';
-  
-  // Sort reverse chrono
-  const sorted = [...commits].sort((a, b) => new Date(b.date) - new Date(a.date));
-  
-  let currentMonth = '';
-  
-  sorted.forEach((commit, index) => {
-    const date = new Date(commit.date);
-    const monthYear = date.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
-    const day = date.getDate().toString().padStart(2, '0');
+
+  lines.forEach(line => {
+    // We want to colorize the graph structure (|, /, \, *) differently from the text
+    // The graph structure is always at the beginning.
+    // Regex strategy: match the leading graph characters.
+    // Graph chars are usually: * | / \ _ - . and spaces
     
-    // Check if it's a milestone
-    const milestone = milestones.find(m => m.hash === commit.hash);
-    const isMilestone = !!milestone;
+    // It's tricky because * is also a commit bullet.
     
-    // Time grouping
-    if (monthYear !== currentMonth) {
-      output += theme.muted(`\n${monthYear}\n`);
-      currentMonth = monthYear;
+    // Simple heuristic: split by timestamp/hash pattern?
+    // Our format: %h %s (%cr) <%an>%d
+    // The hash is the first 7-char hex string we see?
+    
+    const hashMatch = line.match(/([a-f0-9]{7}) /); // Find the hash
+    
+    if (hashMatch) {
+      const idx = hashMatch.index;
+      // Everything before hash is graph
+      const graphPart = line.substring(0, idx);
+      const rest = line.substring(idx);
+      
+      // Colorize graph part: logic to make rails distinct colors?
+      // For now, just a nice neon color.
+      const coloredGraph = graphPart
+        .replace(/\*/g, chalk.hex('#F472B6')('●')) // Commit dot
+        .replace(/[|\\/]/g, (m) => chalk.hex('#60A5FA')(m)); // Rails
+        
+      // Colorize text part
+      // Hash: Yellow
+      // Message: White
+      // (Date): Dim
+      // <Author>: Cyan
+      
+      const coloredRest = rest.replace(
+        /^([a-f0-9]{7}) (.*) \((.*)\) <(.*)>(.*)/,
+        (match, h, msg, date, auth, refs) => {
+           return `${chalk.yellow(h)} ${chalk.white(msg)} ${chalk.dim(`(${date})`)} ${chalk.cyan(`<${auth}>`)}${chalk.red(refs)}`;
+        }
+      );
+      
+      output += coloredGraph + coloredRest + '\n';
+    } else {
+      // Just graph line (merges sometimes have extra lines) or end
+      const coloredGraph = line
+        .replace(/[|\\/]/g, (m) => chalk.hex('#60A5FA')(m));
+      output += coloredGraph + '\n';
     }
-
-    // Tree/Graph symbols (simplified)
-    const connector = index === sorted.length - 1 ? '└─' : '├─';
-    const symbol = isMilestone ? milestone.icon : '●';
-    
-    // Color coding based on type (assuming analysis ran)
-    const type = commit.analysis ? commit.analysis.type : 'other';
-    const color = theme[type] || theme.other;
-
-    const shortHash = commit.hash.substring(0, 7);
-    const summary = commit.message.split('\n')[0];
-    
-    let line = `${theme.muted(day)} ${theme.muted(connector)}${symbol} ${color(shortHash)} ${summary}`;
-    
-    if (isMilestone) {
-      // chalk is needed for bold
-      const chalkIndex = getTheme(options.theme).warning; // Fallback if import missing, but let's import it top level
-      line += `\n     ${theme.muted('│')}  ${theme.warning('★')} ${milestone.title}`;
-    }
-
-    output += line + '\n';
   });
 
   return output;

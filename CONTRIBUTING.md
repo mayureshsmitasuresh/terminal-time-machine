@@ -2,9 +2,74 @@
 
 First off, thanks for taking the time to contribute! 🎉
 
+We love the Open Source community. **Terminal Time Machine** is built by developers like you, for developers like you. Whether you're fixing a typo, adding a new theme, or implementing a complex algorithm for deeper Git analysis, your help is appreciated.
+
+## 👋 Welcome!
+
 The following is a set of guidelines for contributing to `terminal-time-machine`. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
 
-## 🛠️ specific Development Setup
+## 📂 Project Structure
+
+Understanding where things live will help you get started faster:
+
+## 🏗️ Project Architecture
+
+TTM follows a strictly modular "Pipeline" architecture:
+
+1.  **Commands** (`src/commands/`): The entry points. They handle user input, call analyzers, and then pass data to generators.
+2.  **Analyzers** (`src/analyzers/`): Pure logic functions that extract data from Git or the filesystem. They return raw data objects.
+    *   *Example*: `git-parser.js`, `commit-analyzer.js`, `shell-history-parser.js`.
+3.  **Generators** (`src/generators/`): Visual components that take raw data and turn it into strings (Markdown, Terminal Output, Graphs).
+    *   *Example*: `heatmap-generator.js`, `timeline-generator.js`, `story-generator.js`.
+4.  **Utils** (`src/utils/`): Shared helpers for formatting, export, and interactivity.
+
+### Data Flow
+`User Input` -> `Command` -> `Analyzer` (Get Data) -> `Generator` (Make Visuals) -> `Output`
+
+---
+
+## 🚀 Adding a New Command
+
+Want to add a new feature? Follow this pattern:
+
+1.  **Create the Command**: Add `src/commands/my-feature.js`.
+2.  **Implement Logic**:
+    ```javascript
+    import { parseGitHistory } from '../analyzers/git-parser.js';
+    
+    export const myFeatureCommand = async (options) => {
+      const data = await parseGitHistory(process.cwd());
+      console.log('My Feature:', data.totalCommits);
+    };
+    ```
+3.  **Register It**: Import and add to `program` in `src/index.js`.
+4.  **Add to Menu**: Add an entry to the `choices` array in `interactiveMode()` in `src/index.js`.
+
+---
+
+## 🧪 Testing
+
+We value quality. Before submitting a PR:
+
+1.  **Run Manual Tests**:
+    ```bash
+    node bin/ttm.js stats
+    node bin/ttm.js timeline
+    node bin/ttm.js simulator
+    node bin/ttm.js upgrades
+    node bin/ttm.js contributors
+    ```
+2.  **Verify Exports**: Try exporting to PDF to ensure the layout holds up.
+3.  **Check Edge Cases**: Run on an empty repo or a very large repo.
+
+---
+
+## 📝 Documentation
+
+- Update `docs.md` if you add user-facing features.
+- Update `README.md` if you change installation steps.
+
+## 🛠️ Development Setup
 
 1.  **Fork the repository** on GitHub.
 2.  **Clone your fork** locally:
@@ -17,57 +82,39 @@ The following is a set of guidelines for contributing to `terminal-time-machine`
     npm install
     ```
 4.  **Link for local testing**:
+    This is the magic step. It allows you to run `ttm` anywhere on your machine using your *local* code.
     ```bash
     npm link
-    # Now you can run `ttm` anywhere to test your changes
+    # Now you can run `ttm story` or `ttm stats` immediately to test changes!
     ```
 
 ## 🧪 Testing
 
-We use a simple test suite to verify core logic.
+We use a simple test suite to verify core logic. Please run tests before submitting a PR.
 ```bash
-# Run tests
 npm test
 ```
-Please ensure all tests pass before submitting a PR. If you add a new feature, please add a test case in `tests/`.
+If you add a new feature, please add a corresponding test case in `tests/`.
 
 ## 📝 Coding Standards
 
 - **Runtime**: Node.js v18+ (ES Modules).
-- **Style**: Use clean, modern JavaScript (Async/Await, const/let).
-- **Imports**: Always include file extensions in imports (e.g., `import { foo } from './bar.js'`).
-- **Dependencies**: Keep dependencies minimal. We use `simple-git`, `commander`, and `inquirer` as core libraries.
-
-## 💾 Commit Convention
-
-We follow **[Conventional Commits](https://www.conventionalcommits.org/)**. This is crucial because `ttm` itself uses these conventions to generate stories and release notes!
-
-**Format**: `<type>(<scope>): <subject>`
-
-**Allowed Types**:
-- `feat`: A new feature
-- `fix`: A bug fix
-- `docs`: Documentation only changes
-- `style`: Changes that do not affect the meaning of the code (white-space, formatting, etc)
-- `refactor`: A code change that neither fixes a bug nor adds a feature
-- `perf`: A code change that improves performance
-- `test`: Adding missing tests or correcting existing tests
-- `chore`: Changes to the build process or auxiliary tools
-
-**Example**:
-```bash
-feat(visualization): add support for neon theme
-fix(parser): resolve crash on empty repositories
-docs(readme): update installation instructions
-```
+- **Style**: clean, modern JavaScript. We love `async/await`.
+- **Commits**: Please follow [Conventional Commits](https://www.conventionalcommits.org/). This helps us auto-generate our own changelogs!
+    - `feat`: A new feature
+    - `fix`: A bug fix
+    - `docs`: Documentation only
+    - `style`: Formatting, missing semi colons, etc
+    - `refactor`: A code change that neither fixes a bug nor adds a feature
 
 ## 🚀 Pull Request Process
 
-1.  Ensure any install or build dependencies are removed before the end of the layer when doing a build.
-2.  Update the README.md with details of changes to the interface, this includes new environment variables, exposed ports, useful file locations and container parameters.
-3.  Increase the version numbers in any examples files and the README.md to the new version that this Pull Request would represent.
-4.  You may merge the Pull Request in once you have the sign-off of two other developers, or if you do not have permission to do that, you may request the second reviewer to merge it for you.
+1.  Create a feature branch from `main`.
+2.  Make your changes.
+3.  Run `npm test` to ensure nothing broke.
+4.  Push your branch and open a Pull Request.
+5.  Wait for a review! We try to review PRs quickly.
 
 ## 🤝 Code of Conduct
 
-Please note that this project is released with a Contributor Code of Conduct. By participating in this project you agree to abide by its terms. Be respectful, kind, and constructive.
+Please be respectful and kind. We are here to learn and build together.

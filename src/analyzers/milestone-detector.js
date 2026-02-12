@@ -46,11 +46,15 @@ export function detectMilestones(commits, tags) {
   // For now, check diff.changed
   sortedCommits.forEach(commit => {
     if (commit.diff && commit.diff.changed > 15) { // Arbitrary threshold
+      // Use the commit message as the title, but truncate if too long
+      const subject = commit.message.split('\n')[0];
+      const title = subject.length > 50 ? subject.substring(0, 47) + '...' : subject;
+      
       milestones.push({
         date: commit.date,
         hash: commit.hash,
         type: 'refactor',
-        title: 'Major Changes',
+        title: title, // Dynamic Title
         description: `Massive update affecting ${commit.diff.changed} files.`,
         icon: '🏗️'
       });

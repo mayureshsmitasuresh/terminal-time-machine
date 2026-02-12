@@ -3,3 +3,7 @@ node_modules
 *.log
 coverage/
 dist/
+
+# Terminal Time Machine generated files
+.ttm-cache.json
+stats.json

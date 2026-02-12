@@ -60,6 +60,9 @@ export async function parseGitHistory(repoPath = process.cwd(), options = {}) {
         logOptions['from'] = options.from;
         logOptions['to'] = options.to;
     }
+    if (options.limit) {
+      logOptions['--max-count'] = options.limit;
+    }
     
     // simple-git's .log() automatically parses standard log format
     const log = await git.log(logOptions);
@@ -95,5 +98,27 @@ export async function parseGitHistory(repoPath = process.cwd(), options = {}) {
        };
     }
     throw new Error(`Failed to parse git history: ${error.message}`);
+  }
+}
+
+export async function getGitLogGraph(repoPath = process.cwd(), limit = 50) {
+  const git = simpleGit(repoPath);
+  // Format: hash, subject, author relative-date
+  // We want the graph lines to be preserved.
+  // --graph --pretty=format:'%h %s (%cr) <%an>%d'
+  try {
+    const raw = await git.raw([
+      'log',
+      '--graph',
+      '--color=always', // Force color from git? Or parse ourselves?
+      // Git's color output is hard to parse if we want to change it.
+      // Better to get plain text and colorize ourselves, OR let git do it if we like git's colors.
+      // Plan said: "Apply custom coloring". So plain text is better.
+      `--max-count=${limit}`,
+      `--pretty=format:%h %s (%cr) <%an>%d` 
+    ]);
+    return raw;
+  } catch (e) {
+    return 'Error getting graph: ' + e.message;
   }
 }

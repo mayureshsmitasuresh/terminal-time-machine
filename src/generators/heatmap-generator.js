@@ -7,74 +7,92 @@ export function generateHeatmap(commits, options = {}) {
   // 1. Map commits to dates (YYYY-MM-DD)
   const activity = {};
   commits.forEach(c => {
-    const date = c.date.split('T')[0]; // Simple-git ISO string
+    const date = c.date.split('T')[0];
     activity[date] = (activity[date] || 0) + 1;
   });
 
-  // 2. Generate matrix (Last 52 weeks? Or simplified small grid for now)
-  // Let's do last 6 months for terminal width safety (~26 weeks)
+  // 2. Generate matrix (Last 6 Months approx 26 weeks)
+  const COLUMNS = 53; // ~1 year or 6 months? Let's do ~6 months (26 cols) for terminal width
+  // Actually GitHub is 52 weeks. Terminal width is limited. 
+  // 80 chars width. 
+  // "Mon ⬛ ⬛ ⬛ ..."
+  // 52 cols * 2 chars = 104 chars. Too wide for default 80 cols.
+  // Let's do 30 weeks (~7 months). 30 * 2 = 60 chars. + labels = ~70 chars. Perfect.
+  
+  const RECENCY_WEEKS = 30;
+  
   const now = new Date();
   const startDate = new Date(now);
-  startDate.setMonth(now.getMonth() - 6);
+  startDate.setDate(now.getDate() - (RECENCY_WEEKS * 7));
   
-  // Simple block characters: ░ ▒ ▓ █
-  const levels = [' ', '░', '▒', '▓', '█'];
+  // Align startDate to the previous Sunday (to start strictly on Sun-Sat grid)
+  // GitHub starts on Sunday usually? Or Mon?
+  // Let's assume standard Sun=0
+  const dayOfWeek = startDate.getDay();
+  startDate.setDate(startDate.getDate() - dayOfWeek); // Go back to Sunday
+
+  // Levels
+  // ' ' (0), '░' (1), '▒' (2), '▓' (3), '█' (4)
+  // Or distinct blocks: ' ' (0), '▪' (1-2), '▪' (3-5), '■' (6-10), '■' (10+)
+  // GitHub uses shades of green. We use colors + char.
   
-  let output = theme.primary('Activity Heatmap (Last 6 Months)\n\n');
+  const levels = [
+    { threshold: 0, char: ' ', color: theme.muted },   // Empty
+    { threshold: 1, char: '▪', color: chalk.hex('#0E4429') }, // L1 (Dim)
+    { threshold: 3, char: '▪', color: chalk.hex('#006D32') }, // L2
+    { threshold: 6, char: '■', color: chalk.hex('#26A641') }, // L3
+    { threshold: 10, char: '■', color: chalk.hex('#39D353') }, // L4 (Bright)
+  ];
   
-  // Rows: Mon, Wed, Fri
-  const days = ['Mon', '', 'Wed', '', 'Fri', '', ''];
+  // We can also use theme colors if we want.
+  // But let's stick to a nice green "Contribution" aesthetic or theme-based.
+  // Let's use theme.primary for max, theme.secondary for mid.
   
-  // We need to build a grid: 7 rows x N cols
+  const getCell = (count) => {
+    if (count === 0) return chalk.dim('·'); // Dot for empty is nicer than space sometimes? Or specific ' ' with gray bg?
+    // Let's use a dot for empty to see the grid
+    if (count === 0) return chalk.hex('#2d333b')('□'); // GitHub dark mode empty
+    
+    if (count <= 2) return theme.muted('■');
+    if (count <= 5) return theme.info('■');
+    if (count <= 9) return theme.primary('■');
+    return theme.success('■'); // Max
+  };
+
+  let output = theme.primary('Contribution Graph (Last 30 Weeks)\n\n');
+  
+  // Rows: Sun, Mon, Tue, Wed, Thu, Fri, Sat (0-6)
+  // GitHub usually shows Mon, Wed, Fri labels.
+  const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const showLabel = [false, true, false, true, false, true, false]; // Mon, Wed, Fri
+  
   const grid = Array(7).fill().map(() => []);
 
-  // Iterate weeks
+  // build grid column by column
   let current = new Date(startDate);
-  // Align to previous Monday
-  const dayOfWeek = current.getDay(); // 0=Sun, 1=Mon
-  const diff = current.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); 
-  current.setDate(diff);
-
-  while (current <= now) {
-    for (let day = 0; day < 7; day++) { // Mon=0 index logic adjustment?
-      // Date object standard: 0=Sun, 1=Mon.
-      // Let's map grid row 0 = Mon, 6 = Sun.
-      
-      const checkDate = new Date(current);
-      checkDate.setDate(current.getDate() + day);
-      
-      // grid row mapping: 0(Mon)..4(Fri)..6(Sun)
-      // checkDate.getDay(): 0=Sun, 1=Mon...
-      // Map: Mon(1)->0, Tue(2)->1... Sun(0)->6
-      const gridRow = checkDate.getDay() === 0 ? 6 : checkDate.getDay() - 1;
-      
-      const dateStr = checkDate.toISOString().split('T')[0];
-      const count = activity[dateStr] || 0;
-      
-      let char = levels[0];
-      if (count > 0) char = levels[1];
-      if (count > 2) char = levels[2];
-      if (count > 5) char = levels[3];
-      if (count > 10) char = levels[4];
-      
-      let color = theme.muted;
-      if (count > 0) color = theme.success;
-      if (count > 5) color = theme.secondary;
-      
-      if (checkDate > now) {
-         grid[gridRow].push(' '); 
-      } else {
-         grid[gridRow].push(color(char));
-      }
+  
+  // We iterate week by week? No, day by day is safer.
+  // Actually, we need columns.
+  
+  for (let week = 0; week < RECENCY_WEEKS; week++) {
+    for (let day = 0; day < 7; day++) {
+       const dateStr = current.toISOString().split('T')[0];
+       const count = activity[dateStr] || 0;
+       
+       grid[day].push(getCell(count));
+       
+       current.setDate(current.getDate() + 1);
     }
-    // Next week
-    current.setDate(current.getDate() + 7);
   }
 
-  // Render grid
-  grid.forEach((row, i) => {
-    output += `${theme.muted(days[i].padEnd(4))} ${row.join('')}\n`;
+  // Render
+  grid.forEach((row, dayIdx) => {
+    const label = showLabel[dayIdx] ? dayLabels[dayIdx] : '   ';
+    output += `${theme.muted(label)}  ${row.join(' ')}\n`;
   });
+  
+  // Legend?
+  output += `\n${theme.muted('Less')}  ${getCell(0)} ${getCell(2)} ${getCell(5)} ${getCell(8)} ${getCell(12)}  ${theme.muted('More')}\n`;
 
   return output;
 }

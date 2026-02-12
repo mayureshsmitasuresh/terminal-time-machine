@@ -1,123 +1,122 @@
 # Terminal Time Machine 🕰️
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![npm version](https://badge.fury.io/js/terminal-time-machine.svg)](https://badge.fury.io/js/terminal-time-machine)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
-Transform your Git history into engaging narratives, beautiful ASCII visualizations, and deep insights. `ttm` is a CLI tool designed to help developers, teams, and managers understand the story behind the code.
+**The Open Source CLI for the Software Development Community.**
+
+Transform your Git history into engaging narratives, deep analytical insights, and beautiful visualizations. `ttm` is designed for developers, team leads, and open source maintainers to understand the *story* behind the code.
+
+> **📚 [Read the Full Documentation](docs.md)** — Detailed guide for all commands and configuration.
 
 ![Timeline Screenshot](examples/demo-screenshot.png)
 
-## Core Features
-- **📖 Narrative Stories**: Turn dry commit logs into readable chapters.
-- **⚡ Interactive Timeline**: Visual ASCII tree of commits, branches, and tags.
-- **📊 Team Analytics**: Contributor heatmaps, activity graphs, and impact scores.
-- **📝 Automated Release Notes**: Generate professional changelogs instantly.
-- **🤖 Smart Highlights**: AI-inspired milestone detection.
-- **💾 Multi-Format Export**: Save reports as Markdown, HTML, or JSON.
+## 🌟 Why Terminal Time Machine?
 
----
+In the fast-paced world of software development, we often lose track of the journey. `ttm` brings your repository to life.
 
-## 🚀 Step-by-Step Tutorial
+- **For Open Source Maintainers**: Automatically generate rich release notes and change logs to keep your community informed.
+- **For Developers**: Visualize your "Punch Card" productivity and spot code hotspots before they become technical debt.
+- **For Team Leads**: Get a pulse on project health, collaboration patterns, and impact without micromanaging.
 
-### 1. Installation
+## ✨ Key Features
 
-**Requirements**
-- Node.js v18.0.0 or higher
-- Git installed and available in PATH
+### 📖 Narrative Stories
+Turn dry `git log` into readable chapters. our dynamic story engine analyzes commit types, impact scores, and milestones to write a compelling narrative of your project's evolution.
+> *Now featuring dynamic mood analysis and contributor spotlights!*
 
-#### For Global Usage (Recommended)
-This makes the `ttm` command available anywhere in your terminal.
+### 🧠 Deep Insights & Analytics
+Go beyond simple commit counts. The new `stats` command reveals:
+- **🕒 Punch Card**: A visual grid (Day x Hour) showing *when* your team is most productive.
+- **🔥 Code Hotspots**: Identify which files are changing the most (churn analysis).
+- **💬 Project Vocabulary**: See the most common terms in your commit messages.
+- **📊 Rank & Impact**: Visual bar charts for top categories and ranked contributors.
+
+### ⚡ Interactive Timeline
+A beautiful ASCII-based visual tree of your commits, branches, and tags, right in your terminal.
+
+### 📝 Automated Release Notes
+Generate professional, categorized changelogs instantly. Supports Markdown output for GitHub Releases or rich colored output for terminal reading.
+
+### 🔌 Git Native Extension (New!)
+Run TTM commands directly as git subcommands!
+- `git story` -> Generates narrative
+- `git timeline` -> Visual history
+- `git stats` -> Repo statistics
+- `git contributors` -> Hall of Fame
+
+### 📦 Dependency Tracking
+- **Upgrades Command**: Track when dependencies were updated, added, or removed.
+- **Hall of Fame**: A dedicated leaderboard for your project's contributors.
+
+## 🚀 Quick Start
+
+### Installation
+
+**Global (Recommended)**
 ```bash
 npm install -g terminal-time-machine
 ```
 
-#### For One-Time Use (via npx)
+**One-Time Use (npx)**
 ```bash
 npx terminal-time-machine stats
 ```
 
-### 2. Basic Usage
+### Usage
 
-Navigate to any git repository on your machine:
+**1. The "Pulse" Check**
+Get a high-level overview of your repo's health and activity.
 ```bash
-cd /path/to/my-project
+ttm stats
 ```
+*Try `ttm stats --theme neon` for a cyberpunk look!*
 
-#### The Interactive Menu
-If you're unsure where to start, just run:
-```bash
-ttm
-```
-This launches an interactive menu where you can explore all features.
-
-#### Generating a Story
-Want to read how your project evolved last month?
+**2. Tell Me a Story**
+Generate a narrative of the last month's work.
 ```bash
 ttm story --since "1 month ago"
 ```
 
-#### Viewing the Timeline
-See a visual representation of your branch history:
+**3. Visual Timeline**
+See the branch history in a clean, ASCII format.
 ```bash
 ttm timeline
 ```
 
-#### Generating Release Notes
-Need to tell your team what changed between version 1.0 and 2.0?
+**4. Interactive Mode**
+Not sure what to run? Just type `ttm` to launch the interactive menu.
+
+**5. Git Simulator 🕹️**
+Replay your history as if you were typing it again.
 ```bash
-ttm release-notes v1.0 v2.0 --output changelog.md
+ttm git
 ```
+
+**6. Git Extension**
+Once installed, you can run:
+```bash
+git story
+git timeline
+git stats
+```
+
+## 🤝 Community & Contributing
+
+We believe in the power of Open Source. **Terminal Time Machine** is built by developers, for developers.
+
+We welcome contributions of all kinds!
+- **Found a bug?** Open an issue.
+- **Have a feature idea?** Start a discussion.
+- **Want to fix something?** PRs are highly encouraged!
+
+Check out our [CONTRIBUTING.md](CONTRIBUTING.md) to get started. We have a friendly code of conduct and a clear guide on how to set up your development environment.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🏢 Use Cases: Small vs Large Teams
-
-### For Small Teams / Solo Devs (~1-5 people)
-*Goal: Rapid self-review and marketing content.*
-
-**1. "The Weekly Sync"**
-Before your Monday meeting, run `ttm story --since "1 week ago"` to get a narrative summary of what was accomplished. It's friendlier than reading raw logs.
-
-**2. "Portfolio Building"**
-Solo devs can use `ttm story --output blog-post.md` to generate draft content for devlogs or blog posts about their progress.
-
-**3. "Client Reports"**
-Freelancers can export a `ttm stats --format html --output report.html` to show clients "proof of work" with fancy heatmaps and activity graphs.
-
-### For Huge Teams / Enterprise (50+ contributors)
-*Goal: High-level overview, milestone tracking, and onboarding.*
-
-**1. "Onboarding New Hires"**
-New joiners can run `ttm story` to read the "Prologue" and "Chapters" of the project history. It helps them understand the *phases* of development (e.g., "The Great Refactor of 2024") rather than just code.
-
-**2. "Release Management"**
-Release managers can automate changelog generation for massive monorepos using `ttm release-notes <last-tag> HEAD`. The tool groups commits by type (Feat/Fix), making it easier to filter noise.
-
-**3. "Sprint Retrospectives"**
-Use `ttm stats` to identify "Impact Scores" and "Top Contributors" for the sprint.
-- **Heatmaps**: Spot if the team is burning out (too much activity on weekends).
-- **Categories**: Are we spending 80% of time on "Fixes" vs "Features"?
-
----
-
-## ⚙️ Configuration & Customization
-
-### Themes
-Spice up your terminal with built-in themes:
-```bash
-ttm stats --theme neon    # Cyberpunk vibes
-ttm stats --theme sunset  # Warm colors
-```
-
-### Exporting Data
-Need raw data for your own dashboard?
-```bash
-ttm stats --format json --output analytics.json
-```
-
----
-
-## Contributing
-We love contributions! Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to submit pull requests.
-
-## License
-MIT
+*Made with ❤️ for the Open Source community.*

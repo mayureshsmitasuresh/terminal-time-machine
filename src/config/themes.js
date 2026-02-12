@@ -7,6 +7,7 @@ export const themes = {
     success: chalk.green,
     warning: chalk.yellow,
     error: chalk.red,
+    info: chalk.blueBright, // Added
     muted: chalk.gray,
     feat: chalk.green,
     fix: chalk.red,
@@ -21,6 +22,7 @@ export const themes = {
     success: chalk.hex('#95E1D3'),
     warning: chalk.hex('#FCE38A'),
     error: chalk.hex('#FF6B6B'),
+    info: chalk.hex('#4ECDC4'), // Added
     muted: chalk.hex('#556270'),
     feat: chalk.hex('#F38181'),
     fix: chalk.hex('#FCE38A'),
@@ -35,6 +37,7 @@ export const themes = {
     success: chalk.hex('#00FF00'),
     warning: chalk.hex('#FFFF00'),
     error: chalk.hex('#FF0000'),
+    info: chalk.hex('#00FFFF'), // Added
     muted: chalk.hex('#444444'),
     feat: chalk.hex('#39FF14'),
     fix: chalk.hex('#FF0055'),

@@ -5,6 +5,7 @@ import { parseGitHistory } from '../analyzers/git-parser.js';
 import { analyzeCommits } from '../analyzers/commit-analyzer.js';
 import { generateNarrative } from '../generators/story-generator.js';
 import { detectMilestones } from '../analyzers/milestone-detector.js';
+import { askToExport } from '../utils/interactivity.js'; // New Import
 
 export async function storyCommand(options = {}) {
   const spinner = ora('Analyzing git history...').start();
@@ -24,7 +25,6 @@ export async function storyCommand(options = {}) {
     const analysis = await analyzeCommits(gitData.commits, options);
     
     // Step 3: Detect milestones
-    // Passing tags if available for better release detection
     spinner.text = 'Detecting key milestones...';
     const milestones = detectMilestones(gitData.commits, gitData.tags);
     
@@ -50,7 +50,12 @@ export async function storyCommand(options = {}) {
     }));
     console.log('\n');
     console.log(story);
-    console.log('\n'); // Extra spacing at the end
+    console.log('\n'); 
+
+    // Ask to export
+    if (!options.output) {
+      await askToExport(story, 'story');
+    }
     
   } catch (error) {
     spinner.fail('Failed to generate story');
